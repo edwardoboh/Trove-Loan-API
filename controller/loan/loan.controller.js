@@ -1,25 +1,25 @@
 const Loan = require("../../model/Loan.model");
-const payment = require("../../utils/payment.util");
 const Portfolio = require("../../model/Portfolio.model");
+const payment = require("../../utils/payment.util");
+const transfer = require("../../utils/transfer.util");
 const config = require("../../utils/config");
 let ongoingPayments = [];
 
-/**
- * accept loan amount from user
- * check if amount greater than allowed amount
- * make transfer using flutterwave
- * credit user loan account
- * debit on a monthly basis
- * user can choose to clear all loan at a go
- **/
-
 // POST:: /api/v1/loan/takeloan
+/**
+ * PAYLOAD::
+ * userId
+ * loanAmount
+ * loanPeriod
+ * naration
+ * currency
+ */
+
 const takeLoan = async (req, res) => {
   const loan = req.body;
   if (loan.period > config.maxPeriod || loan.period < config.minPeriod)
     return res.json({ err: "Loan Period must be within 6 - 12 months" });
-  let userPort;
-  let userLoan;
+  let userPort, userLoan, newLoan, transferResponse;
   try {
     userPort = await Portfolio.findOne({ userId: loan.userId });
     userLoan = await Loan.findOne({ userId: loan.userId });
@@ -31,11 +31,9 @@ const takeLoan = async (req, res) => {
       });
     if (!userLoan) {
       loan["unpaidBalance"] = loan.loanAmount;
-      const newLoan = await Loan.create(loan);
-      return res.json(newLoan);
+      transferResponse = await transfer.initiateTransfer(loan);
+      newLoan = await Loan.create(loan);
     } else {
-      console.log("Requested Loan: ", loan.loanAmount + userLoan.unpaidBalance);
-      console.log("Portfolio Maximum: ", userPort.loanMax);
       if (loan.loanAmount + userLoan.unpaidBalance > userPort.loanMax)
         return res.json({
           err: "Total Loan Requested by user Exceeds Allowed maximum",
@@ -43,10 +41,10 @@ const takeLoan = async (req, res) => {
       userLoan.unpaidBalance += loan.loanAmount;
       userLoan.loanAmount += loan.loanAmount;
       userLoan.loanPeriod = loan.loanPeriod;
-      const newLoan = await userLoan.save();
-      return res.json(newLoan);
+      transferResponse = await transfer.initiateTransfer(loan);
+      if (transferResponse.success) newLoan = await userLoan.save();
     }
-    // Make Payment Transfer to User Bank Account
+    res.json({ transferResponse, newLoan });
   } catch (err) {
     return res.json({ err: err.message });
   }
@@ -78,7 +76,7 @@ const initiatePayback = async (req, res) => {
 /**
  * PAYLOAD::
  * otp
- * tx_ref :of the API call used in initiating the Endpoint
+ * tx_ref :of initiate API call
  */
 const completePayback = async (req, res) => {
   const { otp, tx_ref } = req.body;
@@ -86,6 +84,8 @@ const completePayback = async (req, res) => {
     return payment.tx_ref == tx_ref;
     // pop the object from the array
   })[0];
+  if (!paymentObject)
+    return res.json({ err: "Connection Lost, Try initiating Payment again" });
   const completionResponse = await payment.completePayment(paymentObject, otp);
   Loan.findOne({ userId: paymentObject.userId }, async (err, resp) => {
     if (err) return (completionResponse["err"] = err.message);

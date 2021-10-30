@@ -5,17 +5,6 @@ const PUBLIC_KEY = process.env.PAY_PUBLIC_KEY,
   SECRET_KEY = process.env.PAY_SECRET_KEY,
   ENC_KEY = process.env.PAY_ENCRYPTION_KEY;
 
-/**
- * PAYLOAD::
- * userId
- * card_number
- * cvv
- * expiry_month
- * expiry_year
- * currency
- * amount
- * pin
- */
 const formatPayload = async (userPayload) => {
   const { card_number, cvv, expiry_month, expiry_year, currency, amount, pin } =
     userPayload;

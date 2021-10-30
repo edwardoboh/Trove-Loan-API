@@ -12,7 +12,7 @@ const UserSchema = new Schema({
   sex: { type: String, required: true },
   age: { type: Number, required: true },
   bank: { type: String },
-  accountNumber: { type: Number, required: true },
+  accountNumber: { type: String, required: true },
   nationality: { type: String, required: true },
   dateCreated: { type: Date, default: Date.now() },
 });

@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 
 // GET:: /api/v1/user
 const getuser = async (req, res) => {
+  console.log("USer1 ", req.user);
+  console.log("USer2 ", req.token);
   const users = await User.find();
   if (!users) return res.json({ err: "No user Found" });
   res.json({ users });

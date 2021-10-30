@@ -1,5 +1,13 @@
 /**
- * 
+ * accept loan amount from user
+ * check if amount greater than allowed amount
+ * make transfer using flutterwave
+ * credit user loan account
+ * debit on a monthly basis
+ * user can choose to clear all loan at a go
+ **/
+
+/**
  * let payload = {
     card_number: "5531886652142950",
     cvv: "564",
@@ -81,3 +89,16 @@
 //     "accountNumber": 632734365,
 //     "nationality": "Nigeria"
 //   }
+
+// const formatPayload = () => {
+//   const payload = {
+//     account_bank: "044", //This is the recipient bank code. :https://developer.flutterwave.com/v3.0/reference#get-all-banks
+//     account_number: "0690000040",
+//     amount: 200,
+//     narration: "ionnodo",
+//     currency: "NGN",
+//     reference: "transfer-" + Date.now(), //This is the merchant's unique reference for the transfer
+//     debit_currency: "NGN",
+//   };
+//   return payload;
+// };

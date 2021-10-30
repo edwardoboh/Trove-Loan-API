@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const config = require("../utils/config");
 
 const PortfolioSchema = new Schema({
   userId: { type: String, required: true },
@@ -12,7 +13,7 @@ const PortfolioSchema = new Schema({
     },
   ],
   portfolioValue: { type: Number },
-  maxPercent: { type: Number, default: 0.6 },
+  maxPercent: { type: Number, default: config.maxPercent },
   loanMax: { type: Number },
 });
 
