@@ -45,16 +45,20 @@ const updatePortfolio = (req, res) => {
 };
 
 // DELETE:: /api/v1/portfolio/delete/:id
-const deleteSingle = (req, res) => {};
+/**
+ *PAYLOAD::
+ *symbols: []
+ */
+const deleteFromPortfolio = (req, res) => {};
 
-// DELETE:: /api/v1/portfolio/delete
-const deleteAll = (req, res) => {};
+// DELETE:: /api/v1/portfolio/delete/all:id
+const deleteWholePortfolio = (req, res) => {};
 
 module.exports = {
   getPortfolio,
   getportfolioValue,
   createPortfolio,
   updatePortfolio,
-  deleteSingle,
-  deleteAll,
+  deleteFromPortfolio,
+  deleteWholePortfolio,
 };

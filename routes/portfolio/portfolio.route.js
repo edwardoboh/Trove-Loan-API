@@ -15,9 +15,9 @@ router.post("/create", portfolioController.createPortfolio);
 router.put("/update/:id", portfolioController.updatePortfolio);
 
 // DELETE:: /api/v1/portfolio/delete/:id
-router.delete("/delete/:id", portfolioController.deleteSingle);
+router.delete("/delete/:id", portfolioController.deleteFromPortfolio);
 
-// DELETE:: /api/v1/portfolio/delete
-router.delete("/delete", portfolioController.deleteAll);
+// DELETE:: /api/v1/portfolio/delete/all/:id
+router.delete("/delete/all/:id", portfolioController.deleteWholePortfolio);
 
 module.exports = router;
