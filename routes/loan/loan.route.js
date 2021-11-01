@@ -12,5 +12,5 @@ router.post("/initiate/payback", loanController.initiatePayback);
 router.post("/complete/payback", loanController.completePayback);
 
 // GET:: /api/v1/loan/:id
-router.get("/:id", loanController.checkBalance);
+router.get("/", loanController.checkBalance);
 module.exports = router;

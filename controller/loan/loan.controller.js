@@ -16,7 +16,8 @@ let ongoingPayments = [];
  */
 
 const takeLoan = async (req, res) => {
-  const loan = req.body;
+  let loan = req.body;
+  loan["userId"] = req.user._id;
   if (loan.period > config.maxPeriod || loan.period < config.minPeriod)
     return res.json({ err: "Loan Period must be within 6 - 12 months" });
   let userPort, userLoan, newLoan, transferResponse;
@@ -25,7 +26,7 @@ const takeLoan = async (req, res) => {
     userLoan = await Loan.findOne({ userId: loan.userId });
     if (!userPort)
       return res.json({ err: "No Portfolio exists for this user" });
-    if (loan.loanAmount > userPort.loanMax)
+    if (Number(loan.loanAmount) > Number(userPort.loanMax))
       return res.json({
         err: "Requested Loan cannot Exceeds Allowed maximum",
       });
@@ -34,7 +35,10 @@ const takeLoan = async (req, res) => {
       transferResponse = await transfer.initiateTransfer(loan);
       newLoan = await Loan.create(loan);
     } else {
-      if (loan.loanAmount + userLoan.unpaidBalance > userPort.loanMax)
+      if (
+        Number(loan.loanAmount) + Number(userLoan.unpaidBalance) >
+        Number(userPort.loanMax)
+      )
         return res.json({
           err: "Total Loan Requested by user Exceeds Allowed maximum",
         });
@@ -63,7 +67,8 @@ const takeLoan = async (req, res) => {
  * pin
  */
 const initiatePayback = async (req, res) => {
-  const payload = req.body;
+  let payload = req.body;
+  payload["userId"] = req.user._id;
   const initiatedObject = await payment.initiatePayment(payload);
   if (initiatedObject.success) {
     ongoingPayments.push(initiatedObject);
@@ -99,7 +104,7 @@ const completePayback = async (req, res) => {
 
 // GET:: /api/v1/loan/:id
 const checkBalance = (req, res) => {
-  const userId = req.params.id;
+  const userId = req.user._id;
   Loan.findOne({ userId }, (err, resp) => {
     if (err) return res.json({ err: err.message });
     if (!resp) return res.json({ err: "User has no active loan" });

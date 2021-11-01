@@ -6,7 +6,7 @@ const PortfolioSchema = new Schema({
   userId: { type: String, required: true },
   stockPositions: [
     {
-      symbol: { type: String, required: true },
+      symbol: { type: String, required: true, unique: true },
       totalQuantity: { type: Number, required: true },
       equityValue: { type: Number, required: true },
       pricePerShare: { type: Number, required: true },

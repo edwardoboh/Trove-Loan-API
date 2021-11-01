@@ -12,9 +12,9 @@ const formatPayload = (user, payload, accountBank) => {
     account_bank = bank.code;
   });
   const formatedPayload = {
-    account_bank,
+    account_bank: "044",
     account_number: user.accountNumber,
-    amount: payload.amount,
+    amount: payload.loanAmount,
     narration: payload.narration,
     currency: payload.currency,
     reference: "TF-" + Date.now(),
