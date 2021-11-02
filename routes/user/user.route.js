@@ -15,7 +15,7 @@ router.get(
 // GET:: /api/v1/user/all
 router.get(
   "/all",
-  auth.authenticate("jwt", { session: false }),
+  // auth.authenticate("jwt", { session: false }),
   userController.getallusers
 );
 

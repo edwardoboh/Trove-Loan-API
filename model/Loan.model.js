@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const LoanSchema = new Schema({
-  userId: { type: String, required: true },
+  userId: { type: String, required: true, unique: true },
   loanAmount: { type: Number, required: true },
   loanPeriod: { type: Number, required: true },
   unpaidBalance: { type: Number, default: 0 },

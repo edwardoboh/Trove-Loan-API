@@ -4,20 +4,23 @@ const jwt = require("jsonwebtoken");
 // GET:: /api/v1/user/:id
 const getuser = async (req, res) => {
   const user = await User.find({ _id: req.user._id });
-  if (!user || user.length == 0) return res.json({ err: "No user Found" });
-  res.json(user);
+  if (!user || user.length == 0)
+    return res.status(404).json({ err: "No user Found" });
+  res.json(user[0]);
 };
 
 // GET:: /api/v1/user/all
 const getallusers = async (req, res) => {
   const users = await User.find();
-  if (!users || users.length == 0) return res.json({ err: "No user Found" });
-  res.json({ users });
+  if (!users || users.length == 0)
+    return res.status(404).json({ err: "No user Found" });
+  res.json(users);
 };
 
 // POST:: /api/v1/user/signup
 const signup = (req, res) => {
-  res.json(req.user);
+  if (req.user.err) return res.status(406).json(req.user);
+  res.status(201).json(req.user);
 };
 
 // POST:: /api/v1/user/login
@@ -49,20 +52,19 @@ const updateUser = async (req, res) => {
     const updatedUser = await User.findOneAndUpdate({ _id }, updateBody, {
       new: true,
     });
-    res.json(updatedUser);
+    res.status(201).json(updatedUser);
   } catch (err) {
-    res.json({ err: err.message });
+    res.status(500).json({ err: err.message });
   }
 };
-
-//
 
 // DELETE:: /api/v1/user/delete/:id
 const deleteUser = (req, res) => {
   const _id = req.user._id;
   User.findOneAndDelete({ _id }, (err, resp) => {
-    if (err) return res.json({ err: err.message });
-    if (!resp) return res.json({ err: "User no longer exists in Database" });
+    if (err) return res.status(500).json({ err: err.message });
+    if (!resp)
+      return res.status(404).json({ err: "User no longer exists in Database" });
     res.json({ success: true, Deleted: resp });
   });
 };

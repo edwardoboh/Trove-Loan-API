@@ -6,15 +6,6 @@ const config = require("../../utils/config");
 let ongoingPayments = [];
 
 // POST:: /api/v1/loan/takeloan
-/**
- * PAYLOAD::
- * userId
- * loanAmount
- * loanPeriod
- * naration
- * currency
- */
-
 const takeLoan = async (req, res) => {
   let loan = req.body;
   loan["userId"] = req.user._id;
@@ -25,9 +16,9 @@ const takeLoan = async (req, res) => {
     userPort = await Portfolio.findOne({ userId: loan.userId });
     userLoan = await Loan.findOne({ userId: loan.userId });
     if (!userPort)
-      return res.json({ err: "No Portfolio exists for this user" });
+      return res.status(404).json({ err: "No Portfolio exists for this user" });
     if (Number(loan.loanAmount) > Number(userPort.loanMax))
-      return res.json({
+      return res.status(406).json({
         err: "Requested Loan cannot Exceeds Allowed maximum",
       });
     if (!userLoan) {
@@ -39,7 +30,7 @@ const takeLoan = async (req, res) => {
         Number(loan.loanAmount) + Number(userLoan.unpaidBalance) >
         Number(userPort.loanMax)
       )
-        return res.json({
+        return res.status(406).json({
           err: "Total Loan Requested by user Exceeds Allowed maximum",
         });
       userLoan.unpaidBalance += loan.loanAmount;
@@ -50,22 +41,11 @@ const takeLoan = async (req, res) => {
     }
     res.json({ transferResponse, newLoan });
   } catch (err) {
-    return res.json({ err: err.message });
+    return res.status(500).json({ err: err.message });
   }
 };
 
 // POST:: /api/v1/loan/initiate/payback
-/**
- * PAYLOAD::
- * userId
- * card_number
- * cvv
- * expiry_month
- * expiry_year
- * currency
- * amount
- * pin
- */
 const initiatePayback = async (req, res) => {
   let payload = req.body;
   payload["userId"] = req.user._id;
@@ -78,11 +58,6 @@ const initiatePayback = async (req, res) => {
 };
 
 // POST:: /api/v1/loan/validate/payback
-/**
- * PAYLOAD::
- * otp
- * tx_ref :of initiate API call
- */
 const completePayback = async (req, res) => {
   const { otp, tx_ref } = req.body;
   let paymentObject = await ongoingPayments.filter((payment, paymentIndex) => {
@@ -90,7 +65,9 @@ const completePayback = async (req, res) => {
     // pop the object from the array
   })[0];
   if (!paymentObject)
-    return res.json({ err: "Connection Lost, Try initiating Payment again" });
+    return res
+      .status(501)
+      .json({ err: "Connection Lost, Try initiating Payment again" });
   const completionResponse = await payment.completePayment(paymentObject, otp);
   Loan.findOne({ userId: paymentObject.userId }, async (err, resp) => {
     if (err) return (completionResponse["err"] = err.message);
@@ -106,8 +83,8 @@ const completePayback = async (req, res) => {
 const checkBalance = (req, res) => {
   const userId = req.user._id;
   Loan.findOne({ userId }, (err, resp) => {
-    if (err) return res.json({ err: err.message });
-    if (!resp) return res.json({ err: "User has no active loan" });
+    if (err) return res.status(500).json({ err: err.message });
+    if (!resp) return res.status(404).json({ err: "User has no active loan" });
     res.json({
       loanAmount: resp.loanAmount,
       unpaidBalance: resp.unpaidBalance,

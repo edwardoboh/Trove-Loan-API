@@ -5,7 +5,8 @@ const getPortfolio = (req, res) => {
   const userId = req.user._id;
   Portfolio.findOne({ userId }, (err, portfolio) => {
     if (err) return res.json({ err: err.message });
-    if (!portfolio) return res.json({ err: "User has no portfolio" });
+    if (!portfolio)
+      return res.status(404).json({ err: "User has no portfolio" });
     res.json(portfolio);
   });
 };
@@ -15,7 +16,8 @@ const getportfolioValue = (req, res) => {
   const userId = req.user._id;
   Portfolio.findOne({ userId }, (err, portfolio) => {
     if (err) return res.json({ err: err.message });
-    if (!portfolio) return res.json({ err: "User has no portfolio" });
+    if (!portfolio)
+      return res.status(404).json({ err: "User has no portfolio" });
     res.json(portfolio.portfolioValue);
   });
 };
@@ -26,9 +28,9 @@ const createPortfolio = async (req, res) => {
     let port = req.body;
     port["userId"] = req.user._id;
     const portfolio = await Portfolio.create(port);
-    res.json(portfolio);
+    res.status(201).json(portfolio);
   } catch (err) {
-    res.json({ err: err.message });
+    res.status(500).json({ err: err.message });
   }
 };
 
@@ -38,12 +40,12 @@ const updatePortfolio = (req, res) => {
   const newPortfolio = req.body;
   Portfolio.findOne({ userId }, (err, resp) => {
     if (err) return res.json({ err: err.message });
-    if (!resp) return res.json({ err: "Portfolio doesn't exists" });
+    if (!resp) return res.status(404).json({ err: "Portfolio doesn't exists" });
     resp.stockPositions.push(newPortfolio);
     resp.portfolioValue += newPortfolio.equityValue;
     resp.loanMax = resp.portfolioValue * resp.maxPercent;
     resp.save();
-    res.json(resp);
+    res.status(201).json(resp);
   });
 };
 
@@ -53,7 +55,7 @@ const deleteFromPortfolio = (req, res) => {
   const symbol = req.params.symbol;
   Portfolio.findOne({ userId }, async (err, resp) => {
     if (err) return res.json({ err: err.message });
-    if (!resp) return res.json({ err: "User Portfolio not found" });
+    if (!resp) return res.status(404).json({ err: "User Portfolio not found" });
     const newPositions = await resp.stockPositions.filter((position) => {
       return position.symbol != symbol;
     });
@@ -68,7 +70,7 @@ const deleteWholePortfolio = (req, res) => {
   const userId = req.user._id;
   Portfolio.findOneAndDelete({ userId }, (err, resp) => {
     if (err) return res.json({ err: err.message });
-    if (!resp) return res.json({ err: "User Portfolio not found" });
+    if (!resp) return res.status(404).json({ err: "User Portfolio not found" });
     res.json(resp);
   });
 };

@@ -3,10 +3,10 @@ const Schema = mongoose.Schema;
 const config = require("../utils/config");
 
 const PortfolioSchema = new Schema({
-  userId: { type: String, required: true },
+  userId: { type: String, required: true, unique: true },
   stockPositions: [
     {
-      symbol: { type: String, required: true, unique: true },
+      symbol: { type: String, required: true },
       totalQuantity: { type: Number, required: true },
       equityValue: { type: Number, required: true },
       pricePerShare: { type: Number, required: true },

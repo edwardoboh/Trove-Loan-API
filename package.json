@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "export NODE_ENV=development && nodemon server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev:test": "nodemon -x 'npm test'",
+    "test": "export NODE_ENV=test && mocha --timeout 100000 $(find test -name '*.js')"
   },
   "author": "edwardoboh",
   "license": "MIT",
@@ -25,6 +26,10 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.14"
+    "chai": "^4.3.4",
+    "chai-http": "^4.3.0",
+    "mocha": "^9.1.3",
+    "nodemon": "^2.0.14",
+    "sinon": "^11.1.2"
   }
 }

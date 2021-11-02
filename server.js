@@ -15,6 +15,8 @@ app.use((req, res, next) => {
 const DB_URL =
   process.env.NODE_ENV === "development"
     ? process.env.MONGO_DB_LOCAL
+    : process.env.NODE_ENV === "test"
+    ? process.env.MONGO_DB_TEST
     : process.env.MONGO_DB_LIVE;
 
 mongoose.connect(
@@ -28,3 +30,5 @@ mongoose.connect(
 app.use("/api/v1", require("./routes"));
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, console.log(`Server started on port: `, PORT));
+
+module.exports = app;
