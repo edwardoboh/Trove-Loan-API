@@ -4,7 +4,7 @@
   "description": "Trove API for stock portfolio loan",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "export NODE_ENV=production && node server.js",
     "dev": "export NODE_ENV=development && nodemon server.js",
     "dev:test": "nodemon -x 'npm test'",
     "test": "export NODE_ENV=test && mocha --timeout 100000 $(find test -name '*.js')"
@@ -23,6 +23,7 @@
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "string-similarity": "^4.0.4",
+    "swagger-ui-express": "^4.1.6",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
