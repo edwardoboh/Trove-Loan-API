@@ -4,7 +4,7 @@
   "description": "Trove API for stock portfolio loan",
   "main": "server.js",
   "scripts": {
-    "start": "export NODE_ENV=production && node server.js",
+    "start": "node server.js",
     "dev": "export NODE_ENV=development && nodemon server.js",
     "dev:test": "nodemon -x 'npm test'",
     "test": "export NODE_ENV=test && mocha --timeout 100000 $(find test -name '*.js')"
