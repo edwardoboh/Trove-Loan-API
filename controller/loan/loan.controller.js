@@ -24,7 +24,7 @@ const takeLoan = async (req, res) => {
     if (!userLoan) {
       loan["unpaidBalance"] = loan.loanAmount;
       transferResponse = await transfer.initiateTransfer(loan);
-      newLoan = await Loan.create(loan);
+      if (transferResponse.success) newLoan = await Loan.create(loan);
     } else {
       if (
         Number(loan.loanAmount) + Number(userLoan.unpaidBalance) >

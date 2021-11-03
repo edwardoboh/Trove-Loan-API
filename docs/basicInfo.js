@@ -8,7 +8,7 @@ module.exports = {
     contact: {
       name: "Edward O. Oboh",
       email: "obohedward@gmail.com",
-      url: "https://linkedin.com/in/edwardoboh",
+      url: "https://github.com/edwardoboh/Trove-Loan-API",
     },
   },
 };

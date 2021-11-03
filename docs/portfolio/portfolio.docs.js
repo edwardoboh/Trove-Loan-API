@@ -76,7 +76,7 @@ exports.deleteStockFromUserPortfolio = {
     operationId: "deleteStockFromUserPortfolio",
     parameters: [
       {
-        name: "id",
+        name: "symbol",
         in: "path",
         schema: {
           $ref: "#/components/schemas/symbol",

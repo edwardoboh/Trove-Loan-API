@@ -55,7 +55,7 @@ module.exports = {
     "/portfolio/update": {
       ...updateUserPortfolio,
     },
-    "/portfolio/delete": {
+    "/portfolio/delete/{symbol}": {
       ...deleteStockFromUserPortfolio,
     },
     "/portfolio/deleteall": {
