@@ -126,6 +126,22 @@ describe("User Workflow - Controller Tests", () => {
         done();
       });
   });
+  it("Login - should FAIL when the user enters a wrong password", (done) => {
+    chai
+      .request(server)
+      .post("/api/v1/user/login")
+      .send({
+        email: "osaretinedward@gmail.com",
+        password: "wrong_password",
+      })
+      .end((err, resp) => {
+        resp.should.have.status(401);
+        resp.should.be.a("object");
+        resp.body.should.not.have.property("user");
+        resp.body.should.not.have.property("accessToken");
+        done();
+      });
+  });
   it("Get User - Should get all details of a user", (done) => {
     chai
       .request(server)
