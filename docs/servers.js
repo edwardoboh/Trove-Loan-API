@@ -1,7 +1,7 @@
 module.exports = {
   servers: [
     {
-      url: "https://trove-loan.herokuapp.com/",
+      url: "https://trove-loan.herokuapp.com/api/v1/",
       description: "Production Server",
     },
     {
